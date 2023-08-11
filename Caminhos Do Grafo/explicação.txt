@@ -1,0 +1,31 @@
+visitados: Uma matriz booleana que rastreia os vértices já visitados durante a busca.
+
+A função aninhada tem_ciclo(vertice, pai): Essa função é usada para verificar se um vértice (e seu subgrafo) contém um ciclo. 
+    Ela recebe dois argumentos: vertice é o vértice atual que está sendo verificado, e pai é o vértice pai do vertice atual. 
+    O pai é usado para garantir que não consideremos o vértice pai como parte de um ciclo.
+
+A função tem_ciclo começa marcando o vertice atual como visitado (visitados[vertice] = True).
+
+Em seguida, itera por todos os vizinhos do vertice atual usando for vizinho in self.lista_adjacencia[vertice]:.
+
+Se um vizinho ainda não foi visitado (if not visitados[vizinho]:), chama recursivamente a função tem_ciclo(vizinho, vertice) 
+    para verificar o subgrafo que começa no vizinho.
+
+Se a chamada recursiva para tem_ciclo(vizinho, vertice) retornar True, isso significa que encontramos um ciclo no subgrafo, e 
+    a função imediatamente retorna True.
+
+Se o vizinho já foi visitado (elif vizinho != pai:), isso significa que encontramos um vizinho que não é o pai e que já foi 
+    visitado. Isso indica que existe uma aresta de volta ao vertice pai, formando um ciclo.
+
+Se nenhum ciclo for encontrado ao percorrer os vizinhos, a função retorna False.
+
+O loop externo for vertice in range(self.num_vertices): percorre todos os vértices do grafo.
+
+Se um vértice ainda não foi visitado (if not visitados[vertice]:), chamamos a função tem_ciclo(vertice, -1) para verificar se 
+    há um ciclo no subgrafo que começa no vertice.
+
+Se a função tem_ciclo(vertice, -1) retornar True, isso significa que foi encontrado um ciclo em algum subgrafo, e a função 
+    principal retorna True.
+
+Se não houver ciclos encontrados em nenhum subgrafo após a busca, a função retorna False.
+
