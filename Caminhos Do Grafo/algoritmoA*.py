@@ -1,52 +1,72 @@
 import heapq
 
-def astar(grafo, inicio, objetivo):
-    lista_aberta = [(0, inicio)]
-    veio_de = {} 
-    custo_real = {no: float('inf') for no in grafo} 
-    custo_real[inicio] = 0
-    custo_total = {no: float('inf') for no in grafo}
-    custo_total[inicio] = heuristica(inicio, objetivo)
+class Grafo:
+    def __init__(self):
+        self.vertices = set()
+        self.arestas = {}
+    
+    def adicionar_vertice(self, vertice):
+        self.vertices.add(vertice)
+        if vertice not in self.arestas:
+            self.arestas[vertice] = []
+    
+    def adicionar_aresta(self, origem, destino, custo):
+        self.adicionar_vertice(origem)
+        self.adicionar_vertice(destino)
+        self.arestas[origem].append((destino, custo))
+        self.arestas[destino].append((origem, custo))
 
-    while lista_aberta:
-        _, atual = heapq.heappop(lista_aberta)
+def a_estrela(grafo, inicio, objetivo):
+    fila_prioridade = [(0, inicio)]
+    custos = {vertice: float('inf') for vertice in grafo.vertices}
+    custos[inicio] = 0
+    pai = {}
+
+    while fila_prioridade:
+        _, atual = heapq.heappop(fila_prioridade)
 
         if atual == objetivo:
-            return reconstruir_caminho(veio_de, atual)
+            caminho = []
+            while atual in pai:
+                caminho.append(atual)
+                atual = pai[atual]
+            caminho.append(inicio)
+            return list(reversed(caminho))
 
-        for vizinho, custo in grafo[atual]:
-            custo_tentativo = custo_real[atual] + custo
+        for vizinho, custo in grafo.arestas[atual]:
+            novo_custo = custos[atual] + custo
 
-            if custo_tentativo < custo_real[vizinho]:
-                veio_de[vizinho] = atual
-                custo_real[vizinho] = custo_tentativo
-                custo_total[vizinho] = custo_tentativo + heuristica(vizinho, objetivo)
-                heapq.heappush(lista_aberta, (custo_total[vizinho], vizinho))
+            if novo_custo < custos[vizinho]:
+                custos[vizinho] = novo_custo
+                prioridade = novo_custo + heuristica(vizinho, objetivo)
+                heapq.heappush(fila_prioridade, (prioridade, vizinho))
+                pai[vizinho] = atual
 
-    return None 
+    return None
 
-def heuristica(no, objetivo):
-    x1, y1 = no
-    x2, y2 = objetivo
-    return ((x1 - x2) ** 2 + (y1 - y2) ** 2) ** 0.5
+def heuristica(origem, objetivo):
+    # Esta é uma heurística simples, a distância em linha reta entre as cidades (não geograficamente precisa).
+    return abs(ord(origem) - ord(objetivo))
 
-def reconstruir_caminho(veio_de, atual):
-    caminho = [atual]
-    while atual in veio_de:
-        atual = veio_de[atual]
-        caminho.append(atual)
-    caminho.reverse()
-    return caminho
+# Exemplo de uso
+grafo = Grafo()
+grafo.adicionar_aresta('A', 'B', 5)
+grafo.adicionar_aresta('A', 'C', 3)
+grafo.adicionar_aresta('B', 'D', 2)
+grafo.adicionar_aresta('C', 'D', 7)
+grafo.adicionar_aresta('C', 'E', 8)
+grafo.adicionar_aresta('D', 'E', 1)
+grafo.adicionar_aresta('B', 'F', 4)
+grafo.adicionar_aresta('E', 'F', 6)
 
-grafo = {
-    (0, 0): [((0, 1), 1), ((1, 0), 1)],
-    (0, 1): [((0, 0), 1), ((1, 1), 1)],
-    (1, 0): [((0, 0), 1), ((1, 1), 1)],
-    (1, 1): [((0, 1), 1), ((1, 0), 1)]
-}
+inicio = 'A'
+objetivo = 'E'
 
-inicio = (0, 0)
-objetivo = (1, 1)
+caminho = a_estrela(grafo, inicio, objetivo)
 
+if caminho:
+    print("Caminho encontrado:", caminho)
+else:
+    print("Não foi possível encontrar um caminho.")
 caminho = astar(grafo, inicio, objetivo)
 print(caminho) 
