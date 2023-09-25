@@ -68,5 +68,5 @@ if caminho:
     print("Caminho encontrado:", caminho)
 else:
     print("Não foi possível encontrar um caminho.")
-caminho = astar(grafo, inicio, objetivo)
+caminho = a_estrela(grafo, inicio, objetivo)
 print(caminho) 
