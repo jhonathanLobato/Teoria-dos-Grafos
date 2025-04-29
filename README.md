@@ -1,5 +1,5 @@
 # Teoria-dos-Grafos
-Repositório exclusivo para colocar códigos em Python referente aos assuntos de grafos.
+Repositório exclusivo para colocar códigos em Go referente aos assuntos de grafos.
 
 ### Caminho em grafo
 #### Algortimos de busca
